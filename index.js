@@ -2,14 +2,18 @@ const express = require('express');
 const ytdl = require('ytdl-core');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
+const path = require('path');
 // const ffmpegPath = require('ffmpeg-static').path;
 // console.log('ffmpeg path:', ffmpegPath);
 ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 // Set the path to the ffmpeg binary
+
+
+app.use(express.static(path.join(__dirname, "Public")))
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + "/Page" + '/index.html');
@@ -94,6 +98,62 @@ app.get('/download', async (req, res) => {
     res.status(500).send('Failed to download video');
   }
 });
+
+app.get('/download-audio', async (req, res) => {
+  const videoURL = req.query.url;
+
+  if (!videoURL) {
+    return res.status(400).send('URL is required');
+  }
+
+  try {
+    const info = await ytdl.getInfo(videoURL);
+    const audioFormat = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
+
+    if (!audioFormat || !audioFormat.hasAudio) {
+      return res.status(400).send('Audio format not available');
+    }
+
+    const audioFile = 'audio.mp4';
+    const outputFile = 'output.mp4';
+
+    const audioStream = ytdl(videoURL, { format: audioFormat });
+
+    const audioWriteStream = fs.createWriteStream(audioFile);
+
+    audioStream.pipe(audioWriteStream);
+
+    audioWriteStream.on('finish', () => {
+      ffmpeg()
+        .input(audioFile)
+        .audioCodec('copy')
+        .save(outputFile)
+        .on('end', () => {
+          res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
+          res.sendFile(__dirname + '/' + outputFile, (err) => {
+            if (err) {
+              console.error('Failed to send the file:', err);
+              res.status(500).send('Failed to send the file');
+            } else {
+              console.log('Audio File sent successfully');
+              // Delete temporary files after sending the response
+              fs.unlinkSync(audioFile);
+              fs.unlinkSync(outputFile);
+            }
+          });
+        })
+        .on('error', (err) => {
+          console.error('Error merging audio:', err);
+          res.status(500).send('Failed to merge audio');
+        });
+    });
+
+  } catch (error) {
+    console.error('Error fetching video information or downloading:', error);
+    res.status(500).send('Failed to download video');
+  }
+});
+
 
 
 app.get('/watch', async (req, res) => {
