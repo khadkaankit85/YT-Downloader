@@ -213,7 +213,9 @@ app.get('/watch', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
-          res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
+          const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
+
+          res.header('Content-Disposition', `attachment; filename="${safeFilename}`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
@@ -251,7 +253,9 @@ app.get('/listen', async (req, res) => {
 
     const audioStream = ytdl(newVideoUrl, { format: audioFormat });
 
-    res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp3"`);
+    const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
+
+    res.header('Content-Disposition', `attachment; filename="${safeFilename}"`);
     res.header('Content-Type', 'audio/mpeg');
 
     ffmpeg(audioStream)
