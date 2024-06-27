@@ -51,20 +51,6 @@ app.get('/download', async (req, res) => {
     videoStream.pipe(videoWriteStream);
     audioStream.pipe(audioWriteStream);
 
-    videoWriteStream.on('finish', () => {
-      videoDownloaded = true;
-      if (audioDownloaded) {
-        mergeStreams();
-      }
-    });
-
-    audioWriteStream.on('finish', () => {
-      audioDownloaded = true;
-      if (videoDownloaded) {
-        mergeStreams();
-      }
-    });
-
     const mergeStreams = () => {
       ffmpeg()
         .input(videoFile)
@@ -93,6 +79,22 @@ app.get('/download', async (req, res) => {
           res.status(500).send('Failed to merge video and audio');
         });
     };
+
+    videoWriteStream.on('finish', () => {
+      videoDownloaded = true;
+      if (audioDownloaded) {
+        mergeStreams();
+      }
+    });
+
+    audioWriteStream.on('finish', () => {
+      audioDownloaded = true;
+      if (videoDownloaded) {
+        mergeStreams();
+      }
+    });
+
+
 
 
   } catch (error) {
