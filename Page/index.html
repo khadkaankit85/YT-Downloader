@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Downloader</title>
-    <!-- <link rel="stylesheet" href="../Public/style.css"> -->
+    <link rel="stylesheet" href="../Public/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
-        <h1>YouTube Video Downloader</h1>
+        <h1 style="font-family:monospace">YouTube Video
+            Downloader</h1>
     </header>
     <div class="container">
         <form action="/download" method="get">
@@ -23,18 +24,38 @@
             This site is purely for educational purposes. Always like and share the videos to support the creator.
         </p>
         <div class="documentation">
-            <h2>Documentation</h2>
+            <h4>Note:</h4>
             <p>
-                This site is designed to download the video just after adding <strong>a</strong> at the front of the
-                URL, but it won't work unless I buy that domain.
+                The initial goal of creating this site was to allow users to freely download YouTube videos by adding
+                <strong>'a'</strong> in front of the URL. However, since I don't own the domain
+                <code>www.ayoutube.com</code>, this couldn't be implemented. Instead, users can download videos and
+                audio by substituting the YouTube domain with my free domain from render.com,
+                <strong>https://yt-downloader-brbx.onrender.com</strong>, which is not very convenient. Unfortunately,
+                without funds to purchase a domain, it's not a viable solution.
             </p>
+
             <p>Example:</p>
             <ul>
-                <li><code>https://www.ayoutube.com/watch?v=example</code> to download video.</li>
-                <li><code>https://www.ayoutube.com/listen?v=example</code> to download audio.</li>
+                <p>After Owning a domain</p>
+                <li><code><strong>https://www.ayoutube.com</strong>/watch?v=example</code> to download video.</li>
+                <li><code><strong>https://www.ayoutube.com</strong>/listen?v=example</code> to download audio.</li>
             </ul>
+            <ul>
+                <p>Right Now</p>
+                <li><code><strong>https://yt-downloader-brbx.onrender.com</strong>/watch?v=example</code> to download
+                    video.</li>
+                <li><code><strong>https://yt-downloader-brbx.onrender.com</strong>/listen?v=example</code> to download
+                    audio.</li>
+            </ul>
+
+            <p style="font-family:'Courier New', Courier, monospace">
+                Contribute to this site from <a href="https://github.com/khadkaankit85/YT-Downloader"
+                    style="color:white;">here</a>
+
+            </p>
         </div>
     </div>
 </body>
+<footer>Made with ❤️ by Angkit Khadka</footer>
 
 </html>
