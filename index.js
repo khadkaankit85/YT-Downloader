@@ -1,6 +1,6 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
-const ffmpeg = require('ffmpeg');
+const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
 const ffmpegPath = require('ffmpeg-static');
@@ -147,6 +147,7 @@ app.get('/download-audio', async (req, res) => {
         .on('error', (err) => {
           console.error('Error merging audio:', err);
           res.status(500).send('Failed to merge audio');
+
         });
     });
 
@@ -199,16 +200,13 @@ app.get('/watch', async (req, res) => {
     });
 
     const mergeStreams = () => {
-      console.log("Started merging files")
       ffmpeg()
         .input(videoFile)
         .videoCodec('copy')
-
         .input(audioFile)
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
-          console.log("the end of merging ")
           res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
