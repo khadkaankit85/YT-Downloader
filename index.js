@@ -1,8 +1,8 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
 const ffmpeg = require('fluent-ffmpeg');
-const fs = require('fs');
 const path = require('path');
+const fs = require("fs")
 const ffmpegPath = require('ffmpeg-static');
 console.log('ffmpeg path is :', ffmpegPath);
 ffmpeg.setFfmpegPath(path.join(__dirname, "node_modules", "ffmpeg-static", "ffmpeg"));
@@ -14,6 +14,8 @@ const port = process.env.PORT || 4000;
 
 
 app.use(express.static(path.join(__dirname, "Public")))
+
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + "/Page" + '/index.html');
@@ -80,18 +82,53 @@ app.get('/download', async (req, res) => {
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
+
+
+              // Always delete temporary files after sending the response
+              fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(videoFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(outputFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+
+
               res.status(500).send('Failed to send the file');
             } else {
               console.log('File sent successfully');
               // Delete temporary files after sending the response
-              fs.unlinkSync(videoFile);
-              fs.unlinkSync(audioFile);
-              fs.unlinkSync(outputFile);
+
+              // Always delete temporary files after sending the response
+              fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(videoFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(outputFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+
             }
           });
         })
         .on('error', (err) => {
           console.error('Error merging video and audio:', err);
+
+          // Always delete temporary files after sending the response
+          fs.unlink(audioFile, (err) => {
+            if (err) console.error('Failed to delete audio file:', err);
+          });
+          fs.unlink(outputFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+          fs.unlink(videoFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+
           res.status(500).send('Failed to merge video and audio');
         });
     };
@@ -137,6 +174,15 @@ app.get('/download-audio', async (req, res) => {
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
+
+              // Always delete temporary files after sending the response
+              fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(outputFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+
               res.status(500).send('Failed to send the file');
             } else {
               console.log('Audio File sent successfully');
@@ -147,6 +193,15 @@ app.get('/download-audio', async (req, res) => {
           });
         })
         .on('error', (err) => {
+
+          // Always delete temporary files after sending the response
+          fs.unlink(audioFile, (err) => {
+            if (err) console.error('Failed to delete audio file:', err);
+          });
+          fs.unlink(outputFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+
           console.error('Error merging audio:', err);
           res.status(500).send('Failed to merge audio');
 
@@ -204,18 +259,23 @@ app.get('/download-mp3', async (req, res) => {
           });
         })
         .on('error', (err) => {
+
+          // Always delete temporary files after sending the response
+          fs.unlink(audioFile, (err) => {
+            if (err) console.error('Failed to delete audio file:', err);
+          });
+          fs.unlink(outputFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+
           console.error('Error merging audio:', err);
           res.status(500).send('Failed to merge audio');
-          fs.unlinkSync(audioFile);
-          fs.unlinkSync(outputFile);
-
         });
     });
 
   } catch (error) {
+
     console.error('Error fetching video information or downloading:', error);
-    fs.unlinkSync(audioFile);
-    fs.unlinkSync(outputFile);
     res.status(500).send('Failed to download video');
 
   }
@@ -277,23 +337,59 @@ app.get('/watch', async (req, res) => {
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
+
+              // Always delete temporary files after sending the response
+              fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(outputFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+              fs.unlink(videoFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+
               res.status(500).send('Failed to send the file');
             } else {
+
+              // Always delete temporary files after sending the response
+              fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(outputFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+              fs.unlink(videoFile, (err) => {
+                if (err) console.error('Failed to delete output file:', err);
+              });
+
               console.log('File sent successfully');
               // Delete temporary files after sending the response
-              fs.unlinkSync(videoFile);
-              fs.unlinkSync(audioFile);
-              fs.unlinkSync(outputFile);
             }
           });
         })
         .on('error', (err) => {
+
+          // Always delete temporary files after sending the response
+          fs.unlink(audioFile, (err) => {
+            if (err) console.error('Failed to delete audio file:', err);
+          });
+          fs.unlink(outputFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+          fs.unlink(videoFile, (err) => {
+            if (err) console.error('Failed to delete output file:', err);
+          });
+
           console.error('Error merging video and audio:', err);
+
           res.status(500).send('Failed to merge video and audio');
         });
     };
 
   } catch (error) {
+
+
     console.error('Error fetching video information or downloading:', error);
     res.status(500).send('Failed to download video');
   }
@@ -322,6 +418,7 @@ app.get('/listen', async (req, res) => {
       })
       .on('error', (err) => {
         console.error('Error converting audio to MP3:', err);
+
         res.status(500).send('Failed to convert audio to MP3');
       })
       .pipe(res, { end: true });
