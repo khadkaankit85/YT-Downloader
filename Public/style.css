@@ -10,6 +10,7 @@ body {
     color: white;
     overflow-x: hidden;
     height: 100vh;
+    min-height: fit-content;
 }
 
 footer {
