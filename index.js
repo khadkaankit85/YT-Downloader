@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const ffmpegPath = require('ffmpeg-static');
 console.log('ffmpeg path is :', ffmpegPath);
-// ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
+ffmpeg.setFfmpegPath(path.join(__dirname, "node_modules", "ffmpeg-static", "ffmpeg"));
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -51,6 +51,22 @@ app.get('/download', async (req, res) => {
     videoStream.pipe(videoWriteStream);
     audioStream.pipe(audioWriteStream);
 
+
+
+    videoWriteStream.on('finish', () => {
+      videoDownloaded = true;
+      if (audioDownloaded) {
+        mergeStreams();
+      }
+    });
+
+    audioWriteStream.on('finish', () => {
+      audioDownloaded = true;
+      if (videoDownloaded) {
+        mergeStreams();
+      }
+    });
+
     const mergeStreams = () => {
       ffmpeg()
         .input(videoFile)
@@ -79,22 +95,6 @@ app.get('/download', async (req, res) => {
           res.status(500).send('Failed to merge video and audio');
         });
     };
-
-    videoWriteStream.on('finish', () => {
-      videoDownloaded = true;
-      if (audioDownloaded) {
-        mergeStreams();
-      }
-    });
-
-    audioWriteStream.on('finish', () => {
-      audioDownloaded = true;
-      if (videoDownloaded) {
-        mergeStreams();
-      }
-    });
-
-
 
 
   } catch (error) {
