@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // Set the path to the ffmpeg binary
+console.log("Path to ffmpeg is ", ffmpeg.path)
 
 
 app.use(express.static(path.join(__dirname, "Public")))
@@ -73,6 +74,7 @@ app.get('/download', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
+          // Set headers before sending the file
           res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
@@ -92,6 +94,7 @@ app.get('/download', async (req, res) => {
           res.status(500).send('Failed to merge video and audio');
         });
     };
+
 
   } catch (error) {
     console.error('Error fetching video information or downloading:', error);
