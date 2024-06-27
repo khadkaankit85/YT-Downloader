@@ -287,11 +287,17 @@ app.get('/download-mp3', async (req, res) => {
 
 
 app.get('/watch', async (req, res) => {
-  const videoID = req.query.v;
-  const newVideoUrl = `https://www.youtube.com/watch?v=${videoID}`
+  const videoID = req.query.v
+  const videoURL = `https://www.youtube.com/watch?v=${videoID}`
+
+
+  console.log(videoURL)
+  if (!videoURL) {
+    return res.status(400).send('URL is required');
+  }
+
   try {
-    console.log(newVideoUrl)
-    const info = await ytdl.getInfo(newVideoUrl);
+    const info = await ytdl.getInfo(videoURL);
     const videoFormat = ytdl.chooseFormat(info.formats, { quality: 'highestvideo' });
     const audioFormat = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
 
@@ -299,8 +305,8 @@ app.get('/watch', async (req, res) => {
     const audioFile = 'audio.mp4';
     const outputFile = 'output.mp4';
 
-    const videoStream = ytdl(newVideoUrl, { format: videoFormat });
-    const audioStream = ytdl(newVideoUrl, { format: audioFormat });
+    const videoStream = ytdl(videoURL, { format: videoFormat });
+    const audioStream = ytdl(videoURL, { format: audioFormat });
 
     const videoWriteStream = fs.createWriteStream(videoFile);
     const audioWriteStream = fs.createWriteStream(audioFile);
@@ -311,6 +317,8 @@ app.get('/watch', async (req, res) => {
 
     videoStream.pipe(videoWriteStream);
     audioStream.pipe(audioWriteStream);
+
+
 
     videoWriteStream.on('finish', () => {
       videoDownloaded = true;
@@ -334,42 +342,46 @@ app.get('/watch', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
+          // Set headers before sending the file
           res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
 
+
               // Always delete temporary files after sending the response
               fs.unlink(audioFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
+              fs.unlink(videoFile, (err) => {
                 if (err) console.error('Failed to delete audio file:', err);
               });
               fs.unlink(outputFile, (err) => {
                 if (err) console.error('Failed to delete output file:', err);
               });
-              fs.unlink(videoFile, (err) => {
-                if (err) console.error('Failed to delete output file:', err);
-              });
+
 
               res.status(500).send('Failed to send the file');
             } else {
+              console.log('File sent successfully');
+              // Delete temporary files after sending the response
 
               // Always delete temporary files after sending the response
               fs.unlink(audioFile, (err) => {
                 if (err) console.error('Failed to delete audio file:', err);
               });
+              fs.unlink(videoFile, (err) => {
+                if (err) console.error('Failed to delete audio file:', err);
+              });
               fs.unlink(outputFile, (err) => {
                 if (err) console.error('Failed to delete output file:', err);
               });
-              fs.unlink(videoFile, (err) => {
-                if (err) console.error('Failed to delete output file:', err);
-              });
 
-              console.log('File sent successfully');
-              // Delete temporary files after sending the response
             }
           });
         })
         .on('error', (err) => {
+          console.error('Error merging video and audio:', err);
 
           // Always delete temporary files after sending the response
           fs.unlink(audioFile, (err) => {
@@ -382,15 +394,12 @@ app.get('/watch', async (req, res) => {
             if (err) console.error('Failed to delete output file:', err);
           });
 
-          console.error('Error merging video and audio:', err);
-
           res.status(500).send('Failed to merge video and audio');
         });
     };
 
+
   } catch (error) {
-
-
     console.error('Error fetching video information or downloading:', error);
     res.status(500).send('Failed to download video');
   }
