@@ -3,15 +3,14 @@ const ytdl = require('ytdl-core');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
-// const ffmpegPath = require('ffmpeg-static');
-// console.log('ffmpeg path:', ffmpegPath);
+const ffmpegPath = require('ffmpeg-static');
+console.log('ffmpeg path is :', ffmpegPath);
 // ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
 const app = express();
 const port = process.env.PORT || 4000;
 
 // Set the path to the ffmpeg binary
-console.log("Path to ffmpeg is ", ffmpeg.path)
 
 
 app.use(express.static(path.join(__dirname, "Public")))
