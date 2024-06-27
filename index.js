@@ -127,15 +127,10 @@ app.get('/download-audio', async (req, res) => {
 
     audioWriteStream.on('finish', () => {
       ffmpeg()
-      console.log("ran ffmpeg function")
         .input(audioFile)
-      console.log("audio file inputted")
         .audioCodec('copy')
-      console.log("ran audiocodec function")
         .save(outputFile)
-      console.log("save output file ran")
         .on('end', () => {
-          console.log("reached the end part")
           res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
@@ -204,13 +199,16 @@ app.get('/watch', async (req, res) => {
     });
 
     const mergeStreams = () => {
+      console.log("Started merging files")
       ffmpeg()
         .input(videoFile)
         .videoCodec('copy')
+
         .input(audioFile)
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
+          console.log("the end of merging ")
           res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
