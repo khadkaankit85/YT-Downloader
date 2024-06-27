@@ -75,9 +75,8 @@ app.get('/download', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
-          const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
           // Set headers before sending the file
-          res.header('Content-Disposition', `attachment; filename="${safeFilename}"`);
+          res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
@@ -134,10 +133,7 @@ app.get('/download-audio', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
-          // Sanitize the filename
-          const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
-          res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}"`);
-
+          res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
@@ -213,9 +209,7 @@ app.get('/watch', async (req, res) => {
         .audioCodec('copy')
         .save(outputFile)
         .on('end', () => {
-          const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
-
-          res.header('Content-Disposition', `attachment; filename="${safeFilename}`);
+          res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
           res.sendFile(__dirname + '/' + outputFile, (err) => {
             if (err) {
               console.error('Failed to send the file:', err);
@@ -253,9 +247,7 @@ app.get('/listen', async (req, res) => {
 
     const audioStream = ytdl(newVideoUrl, { format: audioFormat });
 
-    const safeFilename = info.videoDetails.title.replace(/[^a-z0-9_\-\.]/gi, '_') + '.mp4';
-
-    res.header('Content-Disposition', `attachment; filename="${safeFilename}"`);
+    res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp3"`);
     res.header('Content-Type', 'audio/mpeg');
 
     ffmpeg(audioStream)
