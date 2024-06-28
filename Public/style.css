@@ -22,7 +22,22 @@ body {
     padding: 7px;
     margin: auto;
     gap: 4px;
+    max-width: 100%;
+    min-height: fit-content;
 }
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        /* Apply column layout on smaller screens */
+    }
+}
+
+#downloadButtonSection button {
+    background-color: #724caf;
+
+}
+
 
 footer {
     height: 40px;

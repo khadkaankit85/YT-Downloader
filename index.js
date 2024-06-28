@@ -203,20 +203,20 @@ app.post('/download', (req, res) => {
 
         request.on('timeout', () => {
             console.error('Request timeout while fetching video');
-            res.status(500).send('Request timeout while fetching video');
+            return res.status(500).send('Request timeout while fetching video');
         });
 
         request.end();
     } catch (err) {
         console.error('Invalid URL:', err);
-        res.status(400).send('Invalid URL');
+        return res.status(400).send('Invalid URL');
     }
 });
 
 
 
 
-app.get('/watch', async (req, res) => {
+app.get('/getLinks', async (req, res) => {
     const videoURL = `https://www.youtube.com/watch?v=${req.query.v}`;
     console.log("requested video url is ", videoURL)
     if (!videoURL) {

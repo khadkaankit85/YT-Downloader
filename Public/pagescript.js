@@ -61,7 +61,7 @@ getVideoBtn.addEventListener("click", async (e) => {
     if (!videoUrl || !videoID || videoID == null) {
         return
     }
-    const response = await fetch(`/watch?v=${videoID}`)
+    const response = await fetch(`/getLinks?v=${videoID}`)
     console.log(response)
 
     try {
@@ -86,8 +86,11 @@ getVideoBtn.addEventListener("click", async (e) => {
                     //     throw new Error('Failed to download');
                     // }
                     btn.disabled = true;
+                    const beforeText = btn.innerText
+                    btn.innerText = "Receiving..."
                     setTimeout(() => {
                         btn.disabled = false
+                        btn.innerText = beforeText
                     }, 10000)
                     console.log("trying to download a ", type)
                     triggerDownload(data.title, link.url, type)
