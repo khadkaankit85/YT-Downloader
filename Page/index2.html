@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Downloader</title>
-    <!-- <link rel="stylesheet" href="../Public/style.css"> -->
+    <link rel="stylesheet" href="../Public/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,25 +15,15 @@
             Downloader</h1>
     </header>
     <div class="container">
-        <form>
-            <input type="text" name="url" id="video-url" placeholder="Enter YouTube video URL" required
-                autocomplete="off">
-
-            <button class="download-btn" id="download-video" type="button">Download </button>
-
-            <button type="submit" class="download-btn" formaction="/download">Download HighQuality Video (MP4
-                Audio)</button>
+        <form action="/download" method="get">
+            <input type="text" name="url" placeholder="Enter YouTube video URL" required autocomplete="off">
+            <button type="submit" class="download-btn">Download Video🎥</button>
             <button type="submit" formaction="/download-audio" class="download-btn" style="display:inline">Download MP4
                 🎧</button>
             <button type="submit" formaction="/download-mp3" class="download-btn" style="display:inline">Download MP3
                 🎧</button>
 
-
         </form>
-
-        <div id="downloadButtonSection">
-
-        </div>
         <p class="disclaimer">
             This site is purely for educational purposes. Always like and share the videos to support the creator.
         </p>
@@ -71,6 +61,5 @@
     </div>
 </body>
 <footer>Made with ❤️ by Angkit Khadka</footer>
-<script src="pagescript.js">    </script>
 
 </html>

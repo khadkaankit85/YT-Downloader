@@ -9,8 +9,19 @@ body {
     align-items: center;
     color: white;
     overflow-x: hidden;
-    height: 100vh;
+    height: 110vh;
     min-height: fit-content;
+}
+
+#downloadButtonSection {
+    color: white;
+    display: flex;
+    min-height: fit-content;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    margin: auto;
+    gap: 4px;
 }
 
 footer {
