@@ -1,5 +1,7 @@
 # YouTube Video Downloader
 
+#Warning: this site is no longer maintained and it sleeps most of the time as it is hosted for free somewhere i don't remember
+
 Welcome to the YouTube Video Downloader! This application allows you to download YouTube videos and audio directly from the web.
 
 **Live Demo:** [YouTube Video Downloader](https://yt-downloader-brbx.onrender.com)
